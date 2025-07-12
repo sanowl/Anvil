@@ -1,6 +1,6 @@
 # Anvil
 
-Anvil is an advanced Rust-based machine learning framework with GPU support, async, distributed training, quantization, compile-time safety, and Python bindings.
+Anvil is an  Rust-based machine learning framework with GPU support, async, distributed training, quantization, compile-time safety, and Python bindings.
 
 ## Features
 - High-performance tensor operations
