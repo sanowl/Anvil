@@ -12,7 +12,7 @@ use std::arch::aarch64::*;
 
 impl<T, const DIMS: usize> AdvancedTensor<T, DIMS> 
 where
-    T: Clone + Default + Send + Sync,
+    T: Copy + Clone + Default + Send + Sync,
 {
     /// SIMD-accelerated element-wise addition
     pub fn add_simd(&self, other: &Self) -> AnvilResult<Self> {

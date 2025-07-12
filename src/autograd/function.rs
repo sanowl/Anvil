@@ -99,7 +99,7 @@ impl AddFunction {
 impl Function for AddFunction {
     fn forward(&self, inputs: &[NodeId], ctx: &mut FunctionContext) -> AnvilResult<Box<dyn Any + Send + Sync>> {
         if inputs.len() != 2 {
-            return Err(AnvilError::InvalidInput(\"Add function requires exactly 2 inputs\".to_string()));
+            return Err(AnvilError::InvalidInput("Add function requires exactly 2 inputs".to_string()));
         }
         
         // Mark both inputs as needing gradients
@@ -108,7 +108,7 @@ impl Function for AddFunction {
         
         // For now, return a placeholder
         // In full implementation, this would perform actual tensor addition
-        Err(AnvilError::ComputationError(\"Add function not fully implemented\".to_string()))
+        Err(AnvilError::ComputationError("Add function not fully implemented".to_string()))
     }
     
     fn backward(&self, inputs: &[NodeId]) -> AnvilResult<Vec<Box<dyn Any + Send + Sync>>> {
@@ -121,7 +121,7 @@ impl Function for AddFunction {
     }
     
     fn name(&self) -> &'static str {
-        \"AddFunction\"
+        "AddFunction"
     }
 }
 
@@ -142,7 +142,7 @@ impl MulFunction {
 impl Function for MulFunction {
     fn forward(&self, inputs: &[NodeId], ctx: &mut FunctionContext) -> AnvilResult<Box<dyn Any + Send + Sync>> {
         if inputs.len() != 2 {
-            return Err(AnvilError::InvalidInput(\"Mul function requires exactly 2 inputs\".to_string()));
+            return Err(AnvilError::InvalidInput("Mul function requires exactly 2 inputs".to_string()));
         }
         
         // Save inputs for backward pass (needed for product rule)
@@ -153,7 +153,7 @@ impl Function for MulFunction {
         // ctx.save_for_backward(&input1);
         // ctx.save_for_backward(&input2);
         
-        Err(AnvilError::ComputationError(\"Mul function not fully implemented\".to_string()))
+        Err(AnvilError::ComputationError("Mul function not fully implemented".to_string()))
     }
     
     fn backward(&self, inputs: &[NodeId]) -> AnvilResult<Vec<Box<dyn Any + Send + Sync>>> {
@@ -164,7 +164,7 @@ impl Function for MulFunction {
     }
     
     fn name(&self) -> &'static str {
-        \"MulFunction\"
+        "MulFunction"
     }
 }
 
@@ -185,7 +185,7 @@ impl MatMulFunction {
 impl Function for MatMulFunction {
     fn forward(&self, inputs: &[NodeId], ctx: &mut FunctionContext) -> AnvilResult<Box<dyn Any + Send + Sync>> {
         if inputs.len() != 2 {
-            return Err(AnvilError::InvalidInput(\"MatMul function requires exactly 2 inputs\".to_string()));
+            return Err(AnvilError::InvalidInput("MatMul function requires exactly 2 inputs".to_string()));
         }
         
         ctx.mark_needs_input_grad(0, true);
@@ -194,7 +194,7 @@ impl Function for MatMulFunction {
         // Save inputs for backward pass
         // For matrix multiplication, we need both input matrices to compute gradients
         
-        Err(AnvilError::ComputationError(\"MatMul function not fully implemented\".to_string()))
+        Err(AnvilError::ComputationError("MatMul function not fully implemented".to_string()))
     }
     
     fn backward(&self, inputs: &[NodeId]) -> AnvilResult<Vec<Box<dyn Any + Send + Sync>>> {
@@ -206,7 +206,7 @@ impl Function for MatMulFunction {
     }
     
     fn name(&self) -> &'static str {
-        \"MatMulFunction\"
+        "MatMulFunction"
     }
 }
 
@@ -227,14 +227,14 @@ impl ReLUFunction {
 impl Function for ReLUFunction {
     fn forward(&self, inputs: &[NodeId], ctx: &mut FunctionContext) -> AnvilResult<Box<dyn Any + Send + Sync>> {
         if inputs.len() != 1 {
-            return Err(AnvilError::InvalidInput(\"ReLU function requires exactly 1 input\".to_string()));
+            return Err(AnvilError::InvalidInput("ReLU function requires exactly 1 input".to_string()));
         }
         
         ctx.mark_needs_input_grad(0, true);
         
         // Save input for backward pass (needed to determine where gradient should be zero)
         
-        Err(AnvilError::ComputationError(\"ReLU function not fully implemented\".to_string()))
+        Err(AnvilError::ComputationError("ReLU function not fully implemented".to_string()))
     }
     
     fn backward(&self, inputs: &[NodeId]) -> AnvilResult<Vec<Box<dyn Any + Send + Sync>>> {
@@ -245,7 +245,7 @@ impl Function for ReLUFunction {
     }
     
     fn name(&self) -> &'static str {
-        \"ReLUFunction\"
+        "ReLUFunction"
     }
 }
 
@@ -266,14 +266,14 @@ impl SigmoidFunction {
 impl Function for SigmoidFunction {
     fn forward(&self, inputs: &[NodeId], ctx: &mut FunctionContext) -> AnvilResult<Box<dyn Any + Send + Sync>> {
         if inputs.len() != 1 {
-            return Err(AnvilError::InvalidInput(\"Sigmoid function requires exactly 1 input\".to_string()));
+            return Err(AnvilError::InvalidInput("Sigmoid function requires exactly 1 input".to_string()));
         }
         
         ctx.mark_needs_input_grad(0, true);
         
         // Save output for backward pass (sigmoid derivative can be computed from output)
         
-        Err(AnvilError::ComputationError(\"Sigmoid function not fully implemented\".to_string()))
+        Err(AnvilError::ComputationError("Sigmoid function not fully implemented".to_string()))
     }
     
     fn backward(&self, inputs: &[NodeId]) -> AnvilResult<Vec<Box<dyn Any + Send + Sync>>> {
@@ -284,7 +284,7 @@ impl Function for SigmoidFunction {
     }
     
     fn name(&self) -> &'static str {
-        \"SigmoidFunction\"
+        "SigmoidFunction"
     }
 }
 
@@ -307,14 +307,14 @@ impl SoftmaxFunction {
 impl Function for SoftmaxFunction {
     fn forward(&self, inputs: &[NodeId], ctx: &mut FunctionContext) -> AnvilResult<Box<dyn Any + Send + Sync>> {
         if inputs.len() != 1 {
-            return Err(AnvilError::InvalidInput(\"Softmax function requires exactly 1 input\".to_string()));
+            return Err(AnvilError::InvalidInput("Softmax function requires exactly 1 input".to_string()));
         }
         
         ctx.mark_needs_input_grad(0, true);
         
         // Save output for backward pass
         
-        Err(AnvilError::ComputationError(\"Softmax function not fully implemented\".to_string()))
+        Err(AnvilError::ComputationError("Softmax function not fully implemented".to_string()))
     }
     
     fn backward(&self, inputs: &[NodeId]) -> AnvilResult<Vec<Box<dyn Any + Send + Sync>>> {
@@ -326,7 +326,7 @@ impl Function for SoftmaxFunction {
     }
     
     fn name(&self) -> &'static str {
-        \"SoftmaxFunction\"
+        "SoftmaxFunction"
     }
 }
 
@@ -347,7 +347,7 @@ impl CrossEntropyFunction {
 impl Function for CrossEntropyFunction {
     fn forward(&self, inputs: &[NodeId], ctx: &mut FunctionContext) -> AnvilResult<Box<dyn Any + Send + Sync>> {
         if inputs.len() != 2 {
-            return Err(AnvilError::InvalidInput(\"CrossEntropy function requires exactly 2 inputs (logits, targets)\".to_string()));
+            return Err(AnvilError::InvalidInput("CrossEntropy function requires exactly 2 inputs (logits, targets)".to_string()));
         }
         
         ctx.mark_needs_input_grad(0, true);  // logits need gradients
@@ -355,7 +355,7 @@ impl Function for CrossEntropyFunction {
         
         // Save inputs for backward pass
         
-        Err(AnvilError::ComputationError(\"CrossEntropy function not fully implemented\".to_string()))
+        Err(AnvilError::ComputationError("CrossEntropy function not fully implemented".to_string()))
     }
     
     fn backward(&self, inputs: &[NodeId]) -> AnvilResult<Vec<Box<dyn Any + Send + Sync>>> {
@@ -365,7 +365,7 @@ impl Function for CrossEntropyFunction {
     }
     
     fn name(&self) -> &'static str {
-        \"CrossEntropyFunction\"
+        "CrossEntropyFunction"
     }
 }
 
@@ -386,13 +386,13 @@ impl MSEFunction {
 impl Function for MSEFunction {
     fn forward(&self, inputs: &[NodeId], ctx: &mut FunctionContext) -> AnvilResult<Box<dyn Any + Send + Sync>> {
         if inputs.len() != 2 {
-            return Err(AnvilError::InvalidInput(\"MSE function requires exactly 2 inputs (predictions, targets)\".to_string()));
+            return Err(AnvilError::InvalidInput("MSE function requires exactly 2 inputs (predictions, targets)".to_string()));
         }
         
         ctx.mark_needs_input_grad(0, true);  // predictions need gradients
         ctx.mark_needs_input_grad(1, false); // targets typically don't need gradients
         
-        Err(AnvilError::ComputationError(\"MSE function not fully implemented\".to_string()))
+        Err(AnvilError::ComputationError("MSE function not fully implemented".to_string()))
     }
     
     fn backward(&self, inputs: &[NodeId]) -> AnvilResult<Vec<Box<dyn Any + Send + Sync>>> {
@@ -402,6 +402,6 @@ impl Function for MSEFunction {
     }
     
     fn name(&self) -> &'static str {
-        \"MSEFunction\"
+        "MSEFunction"
     }
 }

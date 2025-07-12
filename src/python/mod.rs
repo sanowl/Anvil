@@ -8,7 +8,7 @@ use crate::error::AnvilResult;
 /// Python wrapper for Anvil tensors
 #[pyclass]
 pub struct PyTensor {
-    tensor: AdvancedTensor<2>,
+    tensor: AdvancedTensor<f32, 2>,
 }
 
 #[pymethods]

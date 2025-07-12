@@ -20,7 +20,7 @@ where
 {
     // Check shape compatibility
     if a.shape() != b.shape() {
-        return Err(AnvilError::InvalidInput(\"Shape mismatch for addition\".to_string()));
+        return Err(AnvilError::InvalidInput("Shape mismatch for addition".to_string()));
     }
     
     // For now, use simplified tensor addition
@@ -40,7 +40,7 @@ where
     T: Clone + Default + Send + Sync + std::ops::Sub<Output = T>,
 {
     if a.shape() != b.shape() {
-        return Err(AnvilError::InvalidInput(\"Shape mismatch for subtraction\".to_string()));
+        return Err(AnvilError::InvalidInput("Shape mismatch for subtraction".to_string()));
     }
     
     let result_tensor = a.tensor().clone(); // Should be actual subtraction
@@ -58,7 +58,7 @@ where
     T: Clone + Default + Send + Sync + std::ops::Mul<Output = T>,
 {
     if a.shape() != b.shape() {
-        return Err(AnvilError::InvalidInput(\"Shape mismatch for multiplication\".to_string()));
+        return Err(AnvilError::InvalidInput("Shape mismatch for multiplication".to_string()));
     }
     
     let result_tensor = a.tensor().clone(); // Should be actual multiplication
@@ -76,7 +76,7 @@ where
     T: Clone + Default + Send + Sync + std::ops::Div<Output = T>,
 {
     if a.shape() != b.shape() {
-        return Err(AnvilError::InvalidInput(\"Shape mismatch for division\".to_string()));
+        return Err(AnvilError::InvalidInput("Shape mismatch for division".to_string()));
     }
     
     let result_tensor = a.tensor().clone(); // Should be actual division
@@ -98,7 +98,7 @@ where
     
     if a_shape.dims[1] != b_shape.dims[0] {
         return Err(AnvilError::InvalidInput(
-            format!(\"Matrix multiplication dimension mismatch: {}x{} @ {}x{}\",
+            format!("Matrix multiplication dimension mismatch: {}x{} @ {}x{}",
                 a_shape.dims[0], a_shape.dims[1], b_shape.dims[0], b_shape.dims[1])
         ));
     }
@@ -145,7 +145,7 @@ pub fn softmax<const DIMS: usize>(
     dim: usize,
 ) -> AnvilResult<Variable<f32, DIMS>> {
     if dim >= DIMS {
-        return Err(AnvilError::InvalidInput(\"Dimension out of bounds\".to_string()));
+        return Err(AnvilError::InvalidInput("Dimension out of bounds".to_string()));
     }
     
     let result_tensor = input.tensor().clone(); // Should apply actual softmax
@@ -159,7 +159,7 @@ pub fn log_softmax<const DIMS: usize>(
     dim: usize,
 ) -> AnvilResult<Variable<f32, DIMS>> {
     if dim >= DIMS {
-        return Err(AnvilError::InvalidInput(\"Dimension out of bounds\".to_string()));
+        return Err(AnvilError::InvalidInput("Dimension out of bounds".to_string()));
     }
     
     let result_tensor = input.tensor().clone(); // Should apply actual log_softmax
@@ -174,7 +174,7 @@ pub fn sum<const DIMS: usize>(
 ) -> AnvilResult<Variable<f32, 0>> {
     if let Some(d) = dim {
         if d >= DIMS {
-            return Err(AnvilError::InvalidInput(\"Dimension out of bounds\".to_string()));
+            return Err(AnvilError::InvalidInput("Dimension out of bounds".to_string()));
         }
     }
     
@@ -195,7 +195,7 @@ pub fn mean<const DIMS: usize>(
 ) -> AnvilResult<Variable<f32, 0>> {
     if let Some(d) = dim {
         if d >= DIMS {
-            return Err(AnvilError::InvalidInput(\"Dimension out of bounds\".to_string()));
+            return Err(AnvilError::InvalidInput("Dimension out of bounds".to_string()));
         }
     }
     
@@ -214,7 +214,7 @@ pub fn cross_entropy_loss<const DIMS: usize>(
     targets: &Variable<f32, DIMS>,
 ) -> AnvilResult<Variable<f32, 0>> {
     if logits.shape() != targets.shape() {
-        return Err(AnvilError::InvalidInput(\"Shape mismatch between logits and targets\".to_string()));
+        return Err(AnvilError::InvalidInput("Shape mismatch between logits and targets".to_string()));
     }
     
     // Compute cross-entropy loss
@@ -233,7 +233,7 @@ pub fn mse_loss<const DIMS: usize>(
     targets: &Variable<f32, DIMS>,
 ) -> AnvilResult<Variable<f32, 0>> {
     if predictions.shape() != targets.shape() {
-        return Err(AnvilError::InvalidInput(\"Shape mismatch between predictions and targets\".to_string()));
+        return Err(AnvilError::InvalidInput("Shape mismatch between predictions and targets".to_string()));
     }
     
     let result_tensor = AdvancedTensor::new(
@@ -259,7 +259,7 @@ where
     
     if old_size != new_size {
         return Err(AnvilError::InvalidInput(
-            format!(\"Cannot reshape tensor of size {} to size {}\", old_size, new_size)
+            format!("Cannot reshape tensor of size {} to size {}", old_size, new_size)
         ));
     }
     
@@ -292,11 +292,11 @@ where
     T: Clone + Default + Send + Sync,
 {
     if tensors.is_empty() {
-        return Err(AnvilError::InvalidInput(\"Cannot concatenate empty tensor list\".to_string()));
+        return Err(AnvilError::InvalidInput("Cannot concatenate empty tensor list".to_string()));
     }
     
     if dim >= DIMS {
-        return Err(AnvilError::InvalidInput(\"Dimension out of bounds\".to_string()));
+        return Err(AnvilError::InvalidInput("Dimension out of bounds".to_string()));
     }
     
     // Check that all tensors have compatible shapes
@@ -309,7 +309,7 @@ where
         for (i, (&a, &b)) in first_shape.dims.iter().zip(shape.dims.iter()).enumerate() {
             if i != dim && a != b {
                 return Err(AnvilError::InvalidInput(
-                    format!(\"All tensors must have same size except in dimension {}\", dim)
+                    format!("All tensors must have same size except in dimension {}", dim)
                 ));
             }
         }
@@ -324,37 +324,37 @@ where
     Ok(Variable::from_tensor(result_tensor, requires_grad))
 }
 
-/// Stack operation
-pub fn stack<T, const DIMS: usize>(
-    tensors: &[&Variable<T, DIMS>],
+/// Stack operation - specialized for common cases
+pub fn stack_2d<T>(
+    tensors: &[&Variable<T, 2>],
     dim: usize,
-) -> AnvilResult<Variable<T, { DIMS + 1 }>>
+) -> AnvilResult<Variable<T, 3>>
 where
     T: Clone + Default + Send + Sync,
 {
     if tensors.is_empty() {
-        return Err(AnvilError::InvalidInput(\"Cannot stack empty tensor list\".to_string()));
+        return Err(AnvilError::InvalidInput("Cannot stack empty tensor list".to_string()));
     }
     
-    if dim > DIMS {
-        return Err(AnvilError::InvalidInput(\"Dimension out of bounds for stacking\".to_string()));
+    if dim > 2 {
+        return Err(AnvilError::InvalidInput("Dimension out of bounds for stacking".to_string()));
     }
     
     // Check that all tensors have the same shape
     let first_shape = tensors[0].shape();
     for tensor in &tensors[1..] {
         if tensor.shape() != first_shape {
-            return Err(AnvilError::InvalidInput(\"All tensors must have the same shape for stacking\".to_string()));
+            return Err(AnvilError::InvalidInput("All tensors must have the same shape for stacking".to_string()));
         }
     }
     
     // Create new shape with additional dimension
-    let mut result_dims = [0; DIMS + 1];
+    let mut result_dims = [0; 3];
     for i in 0..dim {
         result_dims[i] = first_shape.dims[i];
     }
     result_dims[dim] = tensors.len();
-    for i in dim..DIMS {
+    for i in dim..2 {
         result_dims[i + 1] = first_shape.dims[i];
     }
     

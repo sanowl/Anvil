@@ -32,7 +32,7 @@ impl MultiHeadAttentionOp {
 
 #[async_trait]
 impl AdvancedTensorOperation<3> for MultiHeadAttentionOp {
-    async fn forward(&self, input: &Tensor<2>) -> AnvilResult<Tensor<2>> {
+    async fn forward(&self, input: &Tensor<f32, 2>) -> AnvilResult<Tensor<f32, 2>> {
         // Implement attention logic here
         Ok(input.clone())
     }

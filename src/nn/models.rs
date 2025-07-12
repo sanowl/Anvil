@@ -12,7 +12,7 @@ use std::fmt::Debug;
 /// Feed-forward neural network
 #[derive(Debug)]
 pub struct FeedForwardNet {
-    pub layers: Vec<Box<dyn crate::ops::core::TensorOperation<2> + Send + Sync + Debug>>,
+    pub layers: Vec<Box<dyn crate::ops::core::TensorOperation<2> + Send + Sync>>,
     input_size: usize,
     output_size: usize,
 }
@@ -39,7 +39,7 @@ impl FeedForwardNet {
 
 #[async_trait]
 impl TensorOperation<2> for FeedForwardNet {
-    async fn forward(&self, input: &AdvancedTensor<2>) -> AnvilResult<AdvancedTensor<2>> {
+    async fn forward(&self, input: &AdvancedTensor<f32, 2>) -> AnvilResult<AdvancedTensor<f32, 2>> {
         let mut output = input.clone();
         
         for layer in &self.layers {
@@ -53,7 +53,7 @@ impl TensorOperation<2> for FeedForwardNet {
 /// Convolutional neural network
 #[derive(Debug)]
 pub struct ConvNet {
-    pub layers: Vec<Box<dyn crate::ops::core::TensorOperation<4> + Send + Sync + Debug>>,
+    pub layers: Vec<Box<dyn crate::ops::core::TensorOperation<4> + Send + Sync>>,
     input_channels: usize,
     num_classes: usize,
 }
@@ -86,7 +86,7 @@ impl ConvNet {
 
 #[async_trait]
 impl TensorOperation<2> for ConvNet {
-    async fn forward(&self, input: &AdvancedTensor<4>) -> AnvilResult<AdvancedTensor<2>> {
+    async fn forward(&self, input: &AdvancedTensor<f32, 4>) -> AnvilResult<AdvancedTensor<f32, 2>> {
         let mut output = input.clone();
         
         for layer in &self.layers {
@@ -136,7 +136,7 @@ impl Transformer {
 
 #[async_trait]
 impl TensorOperation<3> for Transformer {
-    async fn forward(&self, input: &AdvancedTensor<3>) -> AnvilResult<AdvancedTensor<3>> {
+    async fn forward(&self, input: &AdvancedTensor<f32, 3>) -> AnvilResult<AdvancedTensor<f32, 3>> {
         let mut output = input.clone();
         
         for _ in 0..self.num_layers {

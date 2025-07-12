@@ -264,7 +264,7 @@ where
         
         // Simplified implementation for now
         if self.shape() != other.shape() {
-            return Err(AnvilError::InvalidInput(\"Shape mismatch for addition\".to_string()));
+            return Err(AnvilError::InvalidInput("Shape mismatch for addition".to_string()));
         }
         
         // Create result tensor (simplified)
@@ -297,14 +297,14 @@ where
         T: std::ops::Mul<Output = T>,
     {
         if DIMS != 2 {
-            return Err(AnvilError::InvalidInput(\"Matrix multiplication requires 2D tensors\".to_string()));
+            return Err(AnvilError::InvalidInput("Matrix multiplication requires 2D tensors".to_string()));
         }
         
         let self_shape = self.shape();
         let other_shape = other.shape();
         
         if self_shape.dims[1] != other_shape.dims[0] {
-            return Err(AnvilError::InvalidInput(\"Incompatible dimensions for matrix multiplication\".to_string()));
+            return Err(AnvilError::InvalidInput("Incompatible dimensions for matrix multiplication".to_string()));
         }
         
         // Create result shape
@@ -316,7 +316,7 @@ where
 }
 
 // Activation functions
-impl Variable<f32, DIMS> {
+impl<const DIMS: usize> Variable<f32, DIMS> {
     /// ReLU activation function
     pub fn relu(&self) -> AnvilResult<Self> {
         let result_tensor = self.tensor.clone(); // Should apply ReLU
@@ -338,7 +338,7 @@ impl Variable<f32, DIMS> {
     /// Softmax activation function
     pub fn softmax(&self, dim: usize) -> AnvilResult<Self> {
         if dim >= DIMS {
-            return Err(AnvilError::InvalidInput(\"Dimension out of bounds\".to_string()));
+            return Err(AnvilError::InvalidInput("Dimension out of bounds".to_string()));
         }
         
         let result_tensor = self.tensor.clone(); // Should apply softmax
@@ -348,7 +348,7 @@ impl Variable<f32, DIMS> {
     /// Log softmax activation function
     pub fn log_softmax(&self, dim: usize) -> AnvilResult<Self> {
         if dim >= DIMS {
-            return Err(AnvilError::InvalidInput(\"Dimension out of bounds\".to_string()));
+            return Err(AnvilError::InvalidInput("Dimension out of bounds".to_string()));
         }
         
         let result_tensor = self.tensor.clone(); // Should apply log_softmax

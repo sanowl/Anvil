@@ -215,7 +215,7 @@ impl ElasticCoordinator {
         Ok(())
     }
     // Add current_nodes field
-    pub fn current_nodes(&self) -> usize {
+    pub async fn current_nodes(&self) -> usize {
         self.nodes.read().await.len()
     }
 }

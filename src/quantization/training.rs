@@ -4,6 +4,7 @@ use async_trait::async_trait;
 use crate::{
     error::{AnvilError, AnvilResult},
     tensor::core::{AdvancedTensor, Shape},
+    tensor::DType,
     ops::core::TensorOperation,
     quantization::core::{QuantizedTensor, QuantizationParams},
 };

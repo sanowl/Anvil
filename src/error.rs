@@ -28,6 +28,10 @@ pub enum AnvilError {
     #[error("Compilation error: {0}")]
     CompilationError(String),
 
+    /// Computation errors during tensor operations
+    #[error("Computation error: {0}")]
+    ComputationError(String),
+
     /// GPU-related errors
     #[error("GPU error: {0}")]
     GpuError(String),
@@ -256,6 +260,7 @@ pub enum ErrorCode {
     OutOfMemory,
     InvalidOperation,
     CompilationFailed,
+    ComputationFailed,
     GpuError,
     SerializationFailed,
     ConfigInvalid,
@@ -274,6 +279,7 @@ impl AnvilError {
             AnvilError::MemoryError(_) => ErrorCode::OutOfMemory,
             AnvilError::OperationError { .. } => ErrorCode::InvalidOperation,
             AnvilError::CompilationError(_) => ErrorCode::CompilationFailed,
+            AnvilError::ComputationError(_) => ErrorCode::ComputationFailed,
             AnvilError::GpuError(_) => ErrorCode::GpuError,
             AnvilError::SerializationError(_) => ErrorCode::SerializationFailed,
             AnvilError::ConfigurationError(_) => ErrorCode::ConfigInvalid,
