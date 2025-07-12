@@ -1,0 +1,31 @@
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "anvil-ml"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+version = "0.1.0"
+description = "Advanced Rust-based Machine Learning Framework"
+readme = "README.md"
+authors = [
+    {name = "Anvil Team", email = "team@anvil-ml.com"}
+]
+keywords = ["machine-learning", "neural-networks", "tensor", "rust", "python"]
+license = {text = "MIT"}
+dependencies = [
+    "numpy>=1.20.0",
+    "matplotlib>=3.3.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/anvil-ml/anvil"
+Repository = "https://github.com/anvil-ml/anvil"
+
+[tool.maturin]
+features = ["pyo3/extension-module"] 

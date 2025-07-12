@@ -1,0 +1,100 @@
+[package]
+name = "anvil"
+version = "0.1.0"
+edition = "2021"
+authors = ["Anvil Team"]
+description = "Revolutionary Rust-based ML framework with compile-time safety and advanced features"
+license = "MIT"
+repository = "https://github.com/anvil-ml/anvil"
+keywords = ["machine-learning", "tensor", "neural-network", "gpu", "rust"]
+categories = ["science", "machine-learning"]
+
+[dependencies]
+# Core dependencies
+tokio = { version = "1.0", features = ["full"], optional = true }
+async-trait = { version = "0.1", optional = true }
+tracing = "0.1"
+tracing-subscriber = "0.3"
+rayon = { version = "1.7", optional = true }
+parking_lot = "0.12"
+fastrand = "2.0"
+half = { version = "2.1", optional = true }
+libc = { version = "0.2", optional = true }
+thiserror = "1.0"
+rand = "0.8"
+lazy_static = "1.4"
+serde_json = "1.0"
+
+# SIMD support
+# stdsimd = { package = "portable-simd", git = "https://github.com/rust-lang/stdsimd", branch = "master", optional = true }
+
+# Python bindings
+pyo3 = { version = "0.20", features = ["extension-module"] }
+pyo3-asyncio = { version = "0.20", features = ["tokio-runtime"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+bincode = "1.3"
+
+# GPU support
+wgpu = { version = "0.17", optional = true }
+pollster = { version = "0.3", optional = true }
+
+# Memory mapping and compression
+memmap2 = { version = "0.9", optional = true }
+flate2 = { version = "1.0", optional = true }
+tempfile = { version = "3.8", optional = true }
+
+# Distributed training
+tonic = { version = "0.10", optional = true }
+prost = { version = "0.12", optional = true }
+
+# Profiling
+puffin = { version = "0.3", optional = true }
+perf-event = { version = "0.1", optional = true }
+
+# WASM support
+wasm-bindgen = { version = "0.2", optional = true }
+js-sys = { version = "0.3", optional = true }
+web-sys = { version = "0.3", optional = true }
+
+# Optional dependencies
+# [target.'cfg(target_arch = "x86_64")'.dependencies]
+# x86-cpu = "10.0.0"
+#
+# [target.'cfg(target_arch = "aarch64")'.dependencies]
+# aarch64-cpu = "10.0.0"
+
+[dev-dependencies]
+criterion = "0.5"
+
+[features]
+default = ["gpu", "async", "quantization"]
+gpu = ["wgpu", "pollster"]
+async = ["tokio", "async-trait"]
+profiling = ["puffin", "perf-event"]
+wasm = ["wasm-bindgen", "js-sys", "web-sys"]
+distributed = ["tonic", "prost"]
+quantization = ["rayon", "memmap2", "flate2", "tempfile", "half", "libc"]
+# simd = ["stdsimd"]
+speculative = []
+formal-verification = []
+
+[lib]
+name = "anvil"
+crate-type = ["cdylib", "rlib"]
+path = "src/lib.rs"
+
+[[bin]]
+name = "anvil-cli"
+path = "src/bin/cli.rs"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+
+[profile.dev]
+opt-level = 0
+debug = true 
