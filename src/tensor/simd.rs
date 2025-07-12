@@ -10,7 +10,10 @@ use std::arch::x86_64::*;
 #[cfg(target_arch = "aarch64")]
 use std::arch::aarch64::*;
 
-impl<const DIMS: usize> AdvancedTensor<DIMS> {
+impl<T, const DIMS: usize> AdvancedTensor<T, DIMS> 
+where
+    T: Clone + Default + Send + Sync,
+{
     /// SIMD-accelerated element-wise addition
     pub fn add_simd(&self, other: &Self) -> AnvilResult<Self> {
         if self.shape() != other.shape() {
@@ -315,6 +318,136 @@ impl<const DIMS: usize> AdvancedTensor<DIMS> {
         for i in remainder_start..input.len() {
             result[i] = input[i].max(0.0);
         }
+    }
+    
+    /// SIMD-accelerated matrix multiplication for 2D tensors
+    pub fn matmul_simd(&self, other: &Self) -> AnvilResult<Self> 
+    where
+        T: Copy + std::ops::Add<Output = T> + std::ops::Mul<Output = T> + Default,
+    {
+        if DIMS != 2 {
+            return Err(AnvilError::InvalidInput("Matrix multiplication only supports 2D tensors".to_string()));
+        }
+        
+        let self_shape = self.shape();
+        let other_shape = other.shape();
+        
+        if self_shape.dims[1] != other_shape.dims[0] {
+            return Err(AnvilError::InvalidInput("Matrix dimensions incompatible for multiplication".to_string()));
+        }
+        
+        // For now, delegate to linear ops for actual SIMD matmul
+        // This would be implemented with specialized SIMD GEMM kernels in production
+        Err(AnvilError::ComputationError("SIMD matmul not yet implemented".to_string()))
+    }
+    
+    /// SIMD-accelerated reduction operations
+    pub fn sum_simd(&self) -> AnvilResult<T> 
+    where
+        T: Copy + std::ops::Add<Output = T> + Default + PartialEq,
+    {
+        if self.dtype() != DType::F32 {
+            return Err(AnvilError::InvalidInput("SIMD sum only supports F32 for now".to_string()));
+        }
+        
+        let data = self.as_slice::<f32>();
+        
+        #[cfg(target_arch = "x86_64")]
+        {
+            if is_x86_feature_detected!("avx2") {
+                return Ok(unsafe { std::mem::transmute(Self::sum_simd_avx2(data)) });
+            } else if is_x86_feature_detected!("sse4.1") {
+                return Ok(unsafe { std::mem::transmute(Self::sum_simd_sse(data)) });
+            }
+        }
+        
+        #[cfg(target_arch = "aarch64")]
+        {
+            return Ok(unsafe { std::mem::transmute(Self::sum_simd_neon(data)) });
+        }
+        
+        // Fallback to scalar implementation
+        Ok(unsafe { std::mem::transmute(data.iter().fold(0.0f32, |acc, &x| acc + x)) })
+    }
+    
+    /// Advanced SIMD sum reduction with AVX2
+    #[cfg(target_arch = "x86_64")]
+    unsafe fn sum_simd_avx2(data: &[f32]) -> f32 {
+        let mut sum_vec = _mm256_setzero_ps();
+        let chunks = data.chunks_exact(8);
+        
+        for chunk in chunks {
+            let vec = _mm256_loadu_ps(chunk.as_ptr());
+            sum_vec = _mm256_add_ps(sum_vec, vec);
+        }
+        
+        // Horizontal sum of the AVX2 register
+        let sum_high = _mm256_extractf128_ps(sum_vec, 1);
+        let sum_low = _mm256_castps256_ps128(sum_vec);
+        let sum_128 = _mm_add_ps(sum_high, sum_low);
+        let sum_64 = _mm_add_ps(sum_128, _mm_movehl_ps(sum_128, sum_128));
+        let sum_32 = _mm_add_ss(sum_64, _mm_shuffle_ps(sum_64, sum_64, 1));
+        
+        let mut result = _mm_cvtss_f32(sum_32);
+        
+        // Add remainder
+        let remainder_start = chunks.len() * 8;
+        for &val in &data[remainder_start..] {
+            result += val;
+        }
+        
+        result
+    }
+    
+    /// Advanced SIMD sum reduction with SSE
+    #[cfg(target_arch = "x86_64")]
+    unsafe fn sum_simd_sse(data: &[f32]) -> f32 {
+        let mut sum_vec = _mm_setzero_ps();
+        let chunks = data.chunks_exact(4);
+        
+        for chunk in chunks {
+            let vec = _mm_loadu_ps(chunk.as_ptr());
+            sum_vec = _mm_add_ps(sum_vec, vec);
+        }
+        
+        // Horizontal sum
+        let sum_64 = _mm_add_ps(sum_vec, _mm_movehl_ps(sum_vec, sum_vec));
+        let sum_32 = _mm_add_ss(sum_64, _mm_shuffle_ps(sum_64, sum_64, 1));
+        
+        let mut result = _mm_cvtss_f32(sum_32);
+        
+        // Add remainder
+        let remainder_start = chunks.len() * 4;
+        for &val in &data[remainder_start..] {
+            result += val;
+        }
+        
+        result
+    }
+    
+    /// Advanced SIMD sum reduction with NEON
+    #[cfg(target_arch = "aarch64")]
+    unsafe fn sum_simd_neon(data: &[f32]) -> f32 {
+        let mut sum_vec = vdupq_n_f32(0.0);
+        let chunks = data.chunks_exact(4);
+        
+        for chunk in chunks {
+            let vec = vld1q_f32(chunk.as_ptr());
+            sum_vec = vaddq_f32(sum_vec, vec);
+        }
+        
+        // Horizontal sum
+        let sum_pair = vpadd_f32(vget_low_f32(sum_vec), vget_high_f32(sum_vec));
+        let sum_single = vpadd_f32(sum_pair, sum_pair);
+        let mut result = vget_lane_f32(sum_single, 0);
+        
+        // Add remainder
+        let remainder_start = chunks.len() * 4;
+        for &val in &data[remainder_start..] {
+            result += val;
+        }
+        
+        result
     }
 
     fn add_scalar(a: &[f32], b: &[f32], result: &mut [f32]) {

@@ -18,6 +18,7 @@ mod gpu;
 mod distributed;
 mod compression;
 mod automl;
+mod autograd;
 mod python;
 mod profiling;
 mod error;
