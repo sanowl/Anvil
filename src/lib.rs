@@ -19,6 +19,7 @@ mod distributed;
 mod compression;
 mod automl;
 mod autograd;
+mod training;
 mod python;
 mod profiling;
 mod error;

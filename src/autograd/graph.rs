@@ -105,7 +105,7 @@ impl GraphNode {
                 // In production, this would use the tensor's add operation
                 *existing = grad; // Simplified - should be existing + grad
             } else {
-                return Err(AnvilError::ComputationError(\"Gradient type mismatch\".to_string()));
+                return Err(AnvilError::ComputationError("Gradient type mismatch".to_string()));
             }
         } else {
             self.gradient = Some(Box::new(grad));
@@ -237,7 +237,7 @@ impl ComputationGraph {
         temp_mark: &mut HashMap<NodeId, bool>,
     ) -> AnvilResult<()> {
         if temp_mark.get(&node_id) == Some(&true) {
-            return Err(AnvilError::ComputationError(\"Cycle detected in computation graph\".to_string()));
+            return Err(AnvilError::ComputationError("Cycle detected in computation graph".to_string()));
         }
         
         if visited.get(&node_id) == Some(&true) {
