@@ -3,7 +3,7 @@
 use async_trait::async_trait;
 use crate::{
     error::{AnvilError, AnvilResult},
-    tensor::core::{AdvancedTensor, Shape},
+    tensor::core::{AdvancedTensor, Shape, DType, Device},
     ops::core::{AdvancedTensorOperation, TensorOperation},
     nn::layers::{DenseLayer, ConvLayer},
 };
