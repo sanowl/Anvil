@@ -28,7 +28,7 @@ impl FunctionContext {
     /// Save tensor for backward pass
     pub fn save_for_backward<T, const DIMS: usize>(&mut self, tensor: &AdvancedTensor<T, DIMS>)
     where
-        T: Clone + Send + Sync + 'static,
+        T: Copy + Clone + Send + Sync + 'static,
     {
         self.saved_tensors.push(Box::new(tensor.clone()));
     }
@@ -36,7 +36,7 @@ impl FunctionContext {
     /// Get saved tensor with type checking
     pub fn get_saved_tensor<T, const DIMS: usize>(&self, index: usize) -> Option<&AdvancedTensor<T, DIMS>>
     where
-        T: 'static,
+        T: Copy + 'static,
     {
         self.saved_tensors.get(index)?.downcast_ref()
     }

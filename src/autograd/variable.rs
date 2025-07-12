@@ -198,7 +198,7 @@ where
     /// Get raw data as slice
     pub fn as_slice<U>(&self) -> &[U] 
     where
-        U: 'static,
+        U: Copy + 'static,
     {
         self.tensor.as_slice()
     }
@@ -206,7 +206,7 @@ where
     /// Get raw data as mutable slice
     pub fn as_slice_mut<U>(&mut self) -> &mut [U] 
     where
-        U: 'static,
+        U: Copy + 'static,
     {
         self.tensor.as_slice_mut()
     }

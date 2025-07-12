@@ -72,7 +72,7 @@ impl GraphNode {
     /// Get tensor with type checking
     pub fn get_tensor<T, const DIMS: usize>(&self) -> Option<&AdvancedTensor<T, DIMS>> 
     where
-        T: 'static,
+        T: Copy + 'static,
     {
         self.tensor.downcast_ref::<AdvancedTensor<T, DIMS>>()
     }
@@ -80,7 +80,7 @@ impl GraphNode {
     /// Get gradient with type checking
     pub fn get_gradient<T, const DIMS: usize>(&self) -> Option<&AdvancedTensor<T, DIMS>> 
     where
-        T: 'static,
+        T: Copy + 'static,
     {
         self.gradient.as_ref()?.downcast_ref::<AdvancedTensor<T, DIMS>>()
     }
@@ -262,7 +262,7 @@ impl ComputationGraph {
     /// Get gradient for a node
     pub fn get_gradient<T, const DIMS: usize>(&self, node_id: NodeId) -> Option<&AdvancedTensor<T, DIMS>> 
     where
-        T: 'static,
+        T: Copy + 'static,
     {
         self.nodes.get(&node_id)?.get_gradient()
     }
