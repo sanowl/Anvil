@@ -46,7 +46,7 @@ impl AutogradEngine {
         requires_grad: bool
     ) -> Variable<T, DIMS> 
     where
-        T: Clone + Default + Send + Sync,
+        T: Copy + Clone + Default + Send + Sync,
     {
         let node_id = self.graph.create_leaf_node(tensor.clone(), requires_grad);
         Variable::new(tensor, Some(node_id), requires_grad)
@@ -55,7 +55,7 @@ impl AutogradEngine {
     /// Run backward pass from a scalar loss
     pub fn backward<T>(&mut self, loss: &Variable<T, 0>) -> AnvilResult<()> 
     where
-        T: Clone + Default + Send + Sync + std::fmt::Debug,
+        T: Copy + Clone + Default + Send + Sync + std::fmt::Debug,
     {
         if let Some(node_id) = loss.node_id() {
             self.graph.backward(node_id)?;
@@ -70,7 +70,7 @@ impl AutogradEngine {
     /// Get accumulated gradients for a variable
     pub fn gradients<T, const DIMS: usize>(&self, var: &Variable<T, DIMS>) -> Option<&AdvancedTensor<T, DIMS>> 
     where
-        T: Clone + Default + Send + Sync,
+        T: Copy + Clone + Default + Send + Sync,
     {
         if let Some(node_id) = var.node_id() {
             self.graph.get_gradient(node_id)

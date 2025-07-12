@@ -11,7 +11,7 @@ use super::graph::NodeId;
 #[derive(Debug, Clone)]
 pub struct Gradient<T, const DIMS: usize> 
 where
-    T: Clone + Default + Send + Sync,
+    T: Copy + Clone + Default + Send + Sync,
 {
     pub data: AdvancedTensor<T, DIMS>,
     pub accumulated: bool,
@@ -19,7 +19,7 @@ where
 
 impl<T, const DIMS: usize> Gradient<T, DIMS> 
 where
-    T: Clone + Default + Send + Sync,
+    T: Copy + Clone + Default + Send + Sync,
 {
     pub fn new(data: AdvancedTensor<T, DIMS>) -> Self {
         Self {
@@ -42,7 +42,7 @@ where
 #[derive(Debug, Clone)]
 pub struct Variable<T, const DIMS: usize> 
 where
-    T: Clone + Default + Send + Sync,
+    T: Copy + Clone + Default + Send + Sync,
 {
     tensor: AdvancedTensor<T, DIMS>,
     node_id: Option<NodeId>,
@@ -53,7 +53,7 @@ where
 
 impl<T, const DIMS: usize> Variable<T, DIMS> 
 where
-    T: Clone + Default + Send + Sync,
+    T: Copy + Clone + Default + Send + Sync,
 {
     /// Create a new variable
     pub fn new(
@@ -253,7 +253,7 @@ where
 // Implement arithmetic operations that create computation graph nodes
 impl<T, const DIMS: usize> Variable<T, DIMS> 
 where
-    T: Clone + Default + Send + Sync + std::ops::Add<Output = T>,
+    T: Copy + Clone + Default + Send + Sync + std::ops::Add<Output = T>,
 {
     /// Element-wise addition
     pub fn add(&self, other: &Self) -> AnvilResult<Self> {

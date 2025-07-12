@@ -16,7 +16,7 @@ pub fn add<T, const DIMS: usize>(
     b: &Variable<T, DIMS>,
 ) -> AnvilResult<Variable<T, DIMS>>
 where
-    T: Clone + Default + Send + Sync + std::ops::Add<Output = T>,
+    T: Copy + Clone + Default + Send + Sync + std::ops::Add<Output = T>,
 {
     // Check shape compatibility
     if a.shape() != b.shape() {
@@ -37,7 +37,7 @@ pub fn sub<T, const DIMS: usize>(
     b: &Variable<T, DIMS>,
 ) -> AnvilResult<Variable<T, DIMS>>
 where
-    T: Clone + Default + Send + Sync + std::ops::Sub<Output = T>,
+    T: Copy + Clone + Default + Send + Sync + std::ops::Sub<Output = T>,
 {
     if a.shape() != b.shape() {
         return Err(AnvilError::InvalidInput("Shape mismatch for subtraction".to_string()));
@@ -55,7 +55,7 @@ pub fn mul<T, const DIMS: usize>(
     b: &Variable<T, DIMS>,
 ) -> AnvilResult<Variable<T, DIMS>>
 where
-    T: Clone + Default + Send + Sync + std::ops::Mul<Output = T>,
+    T: Copy + Clone + Default + Send + Sync + std::ops::Mul<Output = T>,
 {
     if a.shape() != b.shape() {
         return Err(AnvilError::InvalidInput("Shape mismatch for multiplication".to_string()));
@@ -73,7 +73,7 @@ pub fn div<T, const DIMS: usize>(
     b: &Variable<T, DIMS>,
 ) -> AnvilResult<Variable<T, DIMS>>
 where
-    T: Clone + Default + Send + Sync + std::ops::Div<Output = T>,
+    T: Copy + Clone + Default + Send + Sync + std::ops::Div<Output = T>,
 {
     if a.shape() != b.shape() {
         return Err(AnvilError::InvalidInput("Shape mismatch for division".to_string()));
@@ -91,7 +91,7 @@ pub fn matmul<T, const DIMS: usize>(
     b: &Variable<T, 2>,
 ) -> AnvilResult<Variable<T, 2>>
 where
-    T: Clone + Default + Send + Sync + std::ops::Mul<Output = T> + std::ops::Add<Output = T>,
+    T: Copy + Clone + Default + Send + Sync + std::ops::Mul<Output = T> + std::ops::Add<Output = T>,
 {
     let a_shape = a.shape();
     let b_shape = b.shape();
@@ -251,7 +251,7 @@ pub fn reshape<T, const OLD_DIMS: usize, const NEW_DIMS: usize>(
     new_shape: crate::tensor::Shape<NEW_DIMS>,
 ) -> AnvilResult<Variable<T, NEW_DIMS>>
 where
-    T: Clone + Default + Send + Sync,
+    T: Copy + Clone + Default + Send + Sync,
 {
     // Check that total size is preserved
     let old_size = input.size();
@@ -273,7 +273,7 @@ pub fn transpose<T>(
     input: &Variable<T, 2>,
 ) -> AnvilResult<Variable<T, 2>>
 where
-    T: Clone + Default + Send + Sync,
+    T: Copy + Clone + Default + Send + Sync,
 {
     let input_shape = input.shape();
     let transposed_shape = crate::tensor::Shape::new([input_shape.dims[1], input_shape.dims[0]]);
@@ -289,7 +289,7 @@ pub fn cat<T, const DIMS: usize>(
     dim: usize,
 ) -> AnvilResult<Variable<T, DIMS>>
 where
-    T: Clone + Default + Send + Sync,
+    T: Copy + Clone + Default + Send + Sync,
 {
     if tensors.is_empty() {
         return Err(AnvilError::InvalidInput("Cannot concatenate empty tensor list".to_string()));
@@ -330,7 +330,7 @@ pub fn stack_2d<T>(
     dim: usize,
 ) -> AnvilResult<Variable<T, 3>>
 where
-    T: Clone + Default + Send + Sync,
+    T: Copy + Clone + Default + Send + Sync,
 {
     if tensors.is_empty() {
         return Err(AnvilError::InvalidInput("Cannot stack empty tensor list".to_string()));

@@ -32,7 +32,7 @@ impl GraphNode {
         requires_grad: bool,
     ) -> Self 
     where
-        T: Clone + Default + Send + Sync + 'static,
+        T: Copy + Clone + Default + Send + Sync + 'static,
     {
         Self {
             id,
@@ -54,7 +54,7 @@ impl GraphNode {
         grad_fn: Box<dyn Function + Send + Sync>,
     ) -> Self 
     where
-        T: Clone + Default + Send + Sync + 'static,
+        T: Copy + Clone + Default + Send + Sync + 'static,
     {
         Self {
             id,
@@ -88,7 +88,7 @@ impl GraphNode {
     /// Set gradient with type checking
     pub fn set_gradient<T, const DIMS: usize>(&mut self, grad: AdvancedTensor<T, DIMS>) 
     where
-        T: Clone + Default + Send + Sync + 'static,
+        T: Copy + Clone + Default + Send + Sync + 'static,
     {
         self.gradient = Some(Box::new(grad));
     }
@@ -96,7 +96,7 @@ impl GraphNode {
     /// Accumulate gradient
     pub fn accumulate_gradient<T, const DIMS: usize>(&mut self, grad: AdvancedTensor<T, DIMS>) -> AnvilResult<()>
     where
-        T: Clone + Default + Send + Sync + 'static + std::ops::Add<Output = T>,
+        T: Copy + Clone + Default + Send + Sync + 'static + std::ops::Add<Output = T>,
     {
         if let Some(existing_grad) = &mut self.gradient {
             if let Some(existing) = existing_grad.downcast_mut::<AdvancedTensor<T, DIMS>>() {
@@ -139,7 +139,7 @@ impl ComputationGraph {
         requires_grad: bool,
     ) -> NodeId 
     where
-        T: Clone + Default + Send + Sync + 'static,
+        T: Copy + Clone + Default + Send + Sync + 'static,
     {
         let node_id = self.next_id;
         self.next_id += 1;
@@ -162,7 +162,7 @@ impl ComputationGraph {
         grad_fn: Box<dyn Function + Send + Sync>,
     ) -> NodeId 
     where
-        T: Clone + Default + Send + Sync + 'static,
+        T: Copy + Clone + Default + Send + Sync + 'static,
     {
         let node_id = self.next_id;
         self.next_id += 1;

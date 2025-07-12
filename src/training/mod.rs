@@ -251,7 +251,7 @@ impl GradientClipper {
         gradients: &mut [Variable<T, DIMS>],
     ) -> AnvilResult<f32>
     where
-        T: Clone + Default + Send + Sync + std::ops::Mul<Output = T> + std::ops::Add<Output = T>,
+        T: Copy + Clone + Default + Send + Sync + std::ops::Mul<Output = T> + std::ops::Add<Output = T>,
     {
         match self.clip_type {
             ClipType::GlobalNorm => self.clip_by_global_norm(gradients),
@@ -265,7 +265,7 @@ impl GradientClipper {
         gradients: &mut [Variable<T, DIMS>],
     ) -> AnvilResult<f32>
     where
-        T: Clone + Default + Send + Sync,
+        T: Copy + Clone + Default + Send + Sync,
     {
         // Calculate global norm
         let mut total_norm_sq = 0.0f32;
@@ -303,7 +303,7 @@ impl GradientClipper {
         gradients: &mut [Variable<T, DIMS>],
     ) -> AnvilResult<f32>
     where
-        T: Clone + Default + Send + Sync,
+        T: Copy + Clone + Default + Send + Sync,
     {
         let mut max_grad = 0.0f32;
         
@@ -325,7 +325,7 @@ impl GradientClipper {
         gradients: &mut [Variable<T, DIMS>],
     ) -> AnvilResult<f32>
     where
-        T: Clone + Default + Send + Sync,
+        T: Copy + Clone + Default + Send + Sync,
     {
         let mut max_norm = 0.0f32;
         
